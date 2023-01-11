@@ -10,7 +10,7 @@ public class InfiniteNode<T> {
     private final InfiniteNode<T> parent;
     private final T value;
     private Iterator<T> infNodeIterator;
-    private List<T> children;
+    private List<InfiniteNode<T>> children;
 
     public InfiniteNode(InfiniteTree<T> tree, T value, InfiniteNode<T> parent) {
         this.parent = parent;
@@ -38,7 +38,7 @@ public class InfiniteNode<T> {
         Iterator<InfiniteNode<T>> it = (Iterator<InfiniteNode<T>>) tree.children.apply(value);
         it.forEachRemaining(output::add);*/
 
-        return (List<InfiniteNode<T>>) children;
+        return children;
     }
 
     /**
@@ -48,9 +48,9 @@ public class InfiniteNode<T> {
     public InfiniteNode<T> calculateNextChild() {
         // TODO: Implementieren.
         if (infNodeIterator.hasNext()) {
-            T temp = infNodeIterator.next();
+            InfiniteNode temp = new InfiniteNode<>(tree, infNodeIterator.next(), this);
             children.add(temp);
-            return (InfiniteNode<T>) temp;
+            return temp;
         }
         return null;
     }
@@ -60,7 +60,7 @@ public class InfiniteNode<T> {
      */
     public void calculateAllChildren() {
         // TODO: Implementieren.
-        infNodeIterator.forEachRemaining(children::add);
+        infNodeIterator.forEachRemaining(valueT -> children.add(new InfiniteNode<>(tree, valueT, this)));
     }
 
     /**
