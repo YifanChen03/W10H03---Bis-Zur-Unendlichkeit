@@ -33,12 +33,12 @@ public class InfiniteNode<T> {
      */
     public List<InfiniteNode<T>> getChildren() {
         // TODO: Implementieren.
-        List<InfiniteNode<T>> output = new ArrayList<>();
+        /*List<InfiniteNode<T>> output = new ArrayList<>();
         //create Iterator it for children of this node
         Iterator<InfiniteNode<T>> it = (Iterator<InfiniteNode<T>>) tree.children.apply(value);
-        it.forEachRemaining(output::add);
+        it.forEachRemaining(output::add);*/
 
-        return output;
+        return children;
     }
 
     /**
@@ -60,7 +60,7 @@ public class InfiniteNode<T> {
      */
     public void calculateAllChildren() {
         // TODO: Implementieren.
-        //infNodeIterator.forEachRemaining(children::add);
+        infNodeIterator.forEachRemaining(children::add);
     }
 
     /**
