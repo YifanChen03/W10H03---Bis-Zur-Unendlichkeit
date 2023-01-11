@@ -1,5 +1,7 @@
 package pgdp.infinite.tree;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class InfiniteNode<T> {
@@ -7,11 +9,15 @@ public class InfiniteNode<T> {
     private final InfiniteTree<T> tree;
     private final InfiniteNode<T> parent;
     private final T value;
+    private Iterator<InfiniteNode<T>> infNodeIterator;
+    private List<InfiniteNode<T>> children;
 
     public InfiniteNode(InfiniteTree<T> tree, T value, InfiniteNode<T> parent) {
         this.parent = parent;
         this.tree = tree;
         this.value = value;
+        infNodeIterator = (Iterator<InfiniteNode<T>>) tree.children.apply(value);
+        children = new ArrayList<>();
     }
 
     public T getValue() {
@@ -27,7 +33,12 @@ public class InfiniteNode<T> {
      */
     public List<InfiniteNode<T>> getChildren() {
         // TODO: Implementieren.
-        return null;
+        List<InfiniteNode<T>> output = new ArrayList<>();
+        //create Iterator it for children of this node
+        Iterator<InfiniteNode<T>> it = (Iterator<InfiniteNode<T>>) tree.children.apply(value);
+        it.forEachRemaining(output::add);
+
+        return output;
     }
 
     /**
@@ -36,6 +47,11 @@ public class InfiniteNode<T> {
      */
     public InfiniteNode<T> calculateNextChild() {
         // TODO: Implementieren.
+        if (infNodeIterator.hasNext()) {
+            InfiniteNode temp = infNodeIterator.next();
+            children.add(temp);
+            return temp;
+        }
         return null;
     }
 
@@ -44,6 +60,7 @@ public class InfiniteNode<T> {
      */
     public void calculateAllChildren() {
         // TODO: Implementieren.
+        infNodeIterator.forEachRemaining(children::add);
     }
 
     /**
@@ -51,7 +68,7 @@ public class InfiniteNode<T> {
      */
     public boolean isFullyCalculated() {
         // TODO: Implementieren.
-        return false;
+        return !infNodeIterator.hasNext();
     }
 
     /**
@@ -59,6 +76,7 @@ public class InfiniteNode<T> {
      */
     public void resetChildren() {
         // TODO: Implementieren.
+        infNodeIterator = (Iterator<InfiniteNode<T>>) tree.children.apply(value);
     }
 
 }
