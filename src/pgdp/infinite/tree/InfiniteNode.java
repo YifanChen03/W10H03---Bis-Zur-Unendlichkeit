@@ -60,7 +60,7 @@ public class InfiniteNode<T> {
      */
     public void calculateAllChildren() {
         // TODO: Implementieren.
-        infNodeIterator.forEachRemaining(children::add);
+        //infNodeIterator.forEachRemaining(children::add);
     }
 
     /**
