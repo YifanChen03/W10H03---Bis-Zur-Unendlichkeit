@@ -76,10 +76,7 @@ public class InfiniteNode<T> {
     }
 
     public void deleteChildren() {
+        //deletes children without resetting iterator
         children.clear();
     }
-
-    /*public String toString() {
-        return value.toString();
-    }*/
 }

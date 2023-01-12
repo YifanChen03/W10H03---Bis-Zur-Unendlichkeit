@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public class InfiniteTree<T> {
 
@@ -38,21 +39,27 @@ public class InfiniteTree<T> {
         // TODO: Implementieren.
         int currentDepth = 0;
         InfiniteNode<T> root = withRoot(from);
-        T optimalValue = find_helper(root, maxDepth, currentDepth, optimizable);
+        T optimalValue = find_helper(root, maxDepth, currentDepth, optimizable, new ArrayList<>());
 
         //return optimalValue
         return optimalValue;
     }
 
-    public T find_helper(InfiniteNode<T> currentNode, int maxDepth, int currentDepth, Optimizable<T> optimizable) {
+    public T find_helper(InfiniteNode<T> currentNode, int maxDepth, int currentDepth, Optimizable<T> optimizable, List<T> checking) {
         //find value recursively
-        List<T> checking = new ArrayList<>();
         InfiniteNode<T> currentParent = currentNode;
-        T currentValue = currentNode.getValue();
+        T currentParentValue = currentParent.getValue();
+        //stop if we found optimum
+        //check every parentNode itself
+        //System.out.println(currentParentValue);
+        if (optimizable.process(currentParentValue)) {
+            return currentParentValue;
+        }
+
         //stop if maxDepth has been reached and parent node has no nodes left
         if (currentDepth >= maxDepth) {
             //System.out.println(currentValue);
-            return currentValue;
+            return currentParentValue;
         }
 
         //for every node, go through all nodes until there are no nodes left
@@ -60,9 +67,9 @@ public class InfiniteTree<T> {
             currentParent.deleteChildren();
             currentNode = currentParent.calculateNextChild();
             int temporalDepth = currentDepth + 1;
-            T currentOptimum = find_helper(currentNode, maxDepth, temporalDepth, optimizable);
-            if (optimizable.process(currentOptimum)) {
-                return currentOptimum;
+            T currentValue = find_helper(currentNode, maxDepth, temporalDepth, optimizable, checking);
+            if (optimizable.process(currentValue)) {
+                return currentValue;
             }
         }
 
@@ -132,9 +139,9 @@ public class InfiniteTree<T> {
         // sollte 1023 ausgeben, da 1234 nicht in den ersten 10 Ebenen des Baumes vorkommt (2^10 - 1 = 1023) und 1023
         // am nächsten dran ist.
 
-        System.out.println(binaryValueTree.find(0L, 12, optimizableFind.get()));
+        //System.out.println(binaryValueTree.find(0L, 12, optimizableFind.get()));
         // sollte 1234 ausgeben.
 
-        //System.out.println(collatzTree.find(1L, 3, optimizableFind.get()));
+        //System.out.println(collatzTree.find(1L, 3, optimizableBiggest.get()));
     }
 }
