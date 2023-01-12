@@ -1,5 +1,6 @@
 package pgdp.infinite.tree;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
@@ -35,7 +36,38 @@ public class InfiniteTree<T> {
      */
     public T find(T from, int maxDepth, Optimizable<T> optimizable) {
         // TODO: Implementieren.
-        return null;
+        int currentDepth = 0;
+        InfiniteNode<T> root = withRoot(from);
+        T optimalValue = find_helper(root, maxDepth, currentDepth, optimizable);
+
+        //return optimalValue
+        return optimalValue;
+    }
+
+    public T find_helper(InfiniteNode<T> currentNode, int maxDepth, int currentDepth, Optimizable<T> optimizable) {
+        //find value recursively
+        List<T> checking = new ArrayList<>();
+        InfiniteNode<T> currentParent = currentNode;
+        T currentValue = currentNode.getValue();
+        //stop if maxDepth has been reached and parent node has no nodes left
+        if (currentDepth >= maxDepth) {
+            //System.out.println(currentValue);
+            return currentValue;
+        }
+
+        //for every node, go through all nodes until there are no nodes left
+        while (!currentParent.isFullyCalculated()) {
+            currentParent.deleteChildren();
+            currentNode = currentParent.calculateNextChild();
+            int temporalDepth = currentDepth + 1;
+            T currentOptimum = find_helper(currentNode, maxDepth, temporalDepth, optimizable);
+            if (optimizable.process(currentOptimum)) {
+                return currentOptimum;
+            }
+        }
+
+        //return current optimum
+        return optimizable.getOptimum();
     }
 
     public static void main(String[] args) {
@@ -90,17 +122,19 @@ public class InfiniteTree<T> {
             }
         };
 
-        System.out.println(collatzTree.find(1L, 30, optimizableFind.get()));
+        //System.out.println(collatzTree.find(1L, 30, optimizableFind.get()));
         // sollte 1236 ausgeben.
 
-        System.out.println(collatzTree.find(1L, 30, optimizableBiggest.get()));
+        //System.out.println(collatzTree.find(1L, 30, optimizableBiggest.get()));
         // sollte 89478485 ausgeben.
 
-        System.out.println(binaryValueTree.find(0L, 10, optimizableFind.get()));
+        //System.out.println(binaryValueTree.find(0L, 10, optimizableFind.get()));
         // sollte 1023 ausgeben, da 1234 nicht in den ersten 10 Ebenen des Baumes vorkommt (2^10 - 1 = 1023) und 1023
         // am nächsten dran ist.
 
         System.out.println(binaryValueTree.find(0L, 12, optimizableFind.get()));
         // sollte 1234 ausgeben.
+
+        //System.out.println(collatzTree.find(1L, 3, optimizableFind.get()));
     }
 }

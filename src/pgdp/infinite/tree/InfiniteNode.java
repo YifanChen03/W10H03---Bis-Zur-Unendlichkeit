@@ -33,11 +33,6 @@ public class InfiniteNode<T> {
      */
     public List<InfiniteNode<T>> getChildren() {
         // TODO: Implementieren.
-        /*List<InfiniteNode<T>> output = new ArrayList<>();
-        //create Iterator it for children of this node
-        Iterator<InfiniteNode<T>> it = (Iterator<InfiniteNode<T>>) tree.children.apply(value);
-        it.forEachRemaining(output::add);*/
-
         return children;
     }
 
@@ -77,6 +72,14 @@ public class InfiniteNode<T> {
     public void resetChildren() {
         // TODO: Implementieren.
         infNodeIterator = tree.children.apply(value);
+        children.clear();
     }
 
+    public void deleteChildren() {
+        children.clear();
+    }
+
+    /*public String toString() {
+        return value.toString();
+    }*/
 }
