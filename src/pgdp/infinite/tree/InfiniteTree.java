@@ -1,6 +1,7 @@
 package pgdp.infinite.tree;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
@@ -49,14 +50,13 @@ public class InfiniteTree<T> {
         //find value recursively
         InfiniteNode<T> currentParent = currentNode;
         T currentParentValue = currentParent.getValue();
+
         //stop if we found optimum
-        //check every parentNode itself
-        //System.out.println(currentParentValue);
         if (optimizable.process(currentParentValue)) {
             return currentParentValue;
         }
 
-        //stop if maxDepth has been reached and parent node has no nodes left
+        //stop if maxDepth has been reached so we don't want to check children of this node
         if (currentDepth >= maxDepth) {
             //System.out.println(currentValue);
             return currentParentValue;
@@ -88,6 +88,12 @@ public class InfiniteTree<T> {
             boolean hasUnevenPredecessor = (i - 1) % 3 == 0 && (i - 1) / 3 % 2 != 0;
             return (hasUnevenPredecessor ? List.of(i * 2, (i - 1) / 3) : List.of(i * 2)).iterator();
         });
+
+        // Ein Baum mit schweren Objekten
+        InfiniteTree<String[]> heavyTree = new InfiniteTree<>(S -> {
+            return List.of(new String[1000000], new String[50000000]).iterator();
+        });
+
 
         // Ein Optimizable welches den Wert findet welcher am nächsten an 1234 ist.
         Supplier<Optimizable<Long>> optimizableFind = () -> new Optimizable<>() {
@@ -129,19 +135,37 @@ public class InfiniteTree<T> {
             }
         };
 
-        //System.out.println(collatzTree.find(1L, 30, optimizableFind.get()));
+        // Ein Optimizable welches das längeste Array findet.
+        Supplier<Optimizable<String[]>> optimizableLongest = () -> new Optimizable<>() {
+            private String[] optimum = new String[1000000];
+
+            @Override
+            public boolean process(String[] value) {
+                if (value.length > optimum.length) {
+                    optimum = value;
+                }
+                return false;
+            }
+
+            @Override
+            public String[] getOptimum() {
+                return optimum;
+            }
+        };
+
+        System.out.println(collatzTree.find(1L, 30, optimizableFind.get()));
         // sollte 1236 ausgeben.
 
-        //System.out.println(collatzTree.find(1L, 30, optimizableBiggest.get()));
+        System.out.println(collatzTree.find(1L, 30, optimizableBiggest.get()));
         // sollte 89478485 ausgeben.
 
-        //System.out.println(binaryValueTree.find(0L, 10, optimizableFind.get()));
+        System.out.println(binaryValueTree.find(0L, 10, optimizableFind.get()));
         // sollte 1023 ausgeben, da 1234 nicht in den ersten 10 Ebenen des Baumes vorkommt (2^10 - 1 = 1023) und 1023
         // am nächsten dran ist.
 
-        //System.out.println(binaryValueTree.find(0L, 12, optimizableFind.get()));
+        System.out.println(binaryValueTree.find(0L, 12, optimizableFind.get()));
         // sollte 1234 ausgeben.
 
-        //System.out.println(collatzTree.find(1L, 3, optimizableBiggest.get()));
+        //System.out.println(heavyTree.find(new String[1000000], 10, optimizableLongest.get()).length);
     }
 }
