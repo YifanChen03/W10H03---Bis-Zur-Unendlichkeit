@@ -40,25 +40,26 @@ public class InfiniteTree<T> {
         // TODO: Implementieren.
         int currentDepth = 0;
         InfiniteNode<T> root = withRoot(from);
-        T optimalValue = find_helper(root, maxDepth, currentDepth, optimizable, new ArrayList<>());
+        T optimalValue = find_helper(root, maxDepth, currentDepth, optimizable);
 
         //return optimalValue
         return optimalValue;
     }
 
-    public T find_helper(InfiniteNode<T> currentNode, int maxDepth, int currentDepth, Optimizable<T> optimizable, List<T> checking) {
+    public T find_helper(InfiniteNode<T> currentNode, int maxDepth, int currentDepth, Optimizable<T> optimizable) {
         //find value recursively
         InfiniteNode<T> currentParent = currentNode;
         T currentParentValue = currentParent.getValue();
 
         //stop if we found optimum
+        //System.out.println(currentParentValue);
         if (optimizable.process(currentParentValue)) {
             return currentParentValue;
         }
 
         //stop if maxDepth has been reached so we don't want to check children of this node
         if (currentDepth >= maxDepth) {
-            //System.out.println(currentValue);
+            //System.out.println(currentParentValue);
             return currentParentValue;
         }
 
@@ -67,7 +68,7 @@ public class InfiniteTree<T> {
             currentParent.deleteChildren();
             currentNode = currentParent.calculateNextChild();
             int temporalDepth = currentDepth + 1;
-            T currentValue = find_helper(currentNode, maxDepth, temporalDepth, optimizable, checking);
+            T currentValue = find_helper(currentNode, maxDepth, temporalDepth, optimizable);
             if (optimizable.process(currentValue)) {
                 return currentValue;
             }
@@ -90,9 +91,8 @@ public class InfiniteTree<T> {
         });
 
         // Ein Baum mit schweren Objekten
-        InfiniteTree<String[]> heavyTree = new InfiniteTree<>(S -> {
-            return List.of(new String[1000000], new String[50000000]).iterator();
-        });
+        InfiniteTree<String[]> heavyTree = new InfiniteTree<>(S ->
+                List.of(new String[S.length * 2], new String[S.length * 3]).iterator());
 
 
         // Ein Optimizable welches den Wert findet welcher am nächsten an 1234 ist.
@@ -154,6 +154,8 @@ public class InfiniteTree<T> {
         };
 
         System.out.println(collatzTree.find(1L, 30, optimizableFind.get()));
+        long l = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1_000_000;
+        System.out.println("Used: " + l + "MB of RAM");
         // sollte 1236 ausgeben.
 
         System.out.println(collatzTree.find(1L, 30, optimizableBiggest.get()));
@@ -166,6 +168,8 @@ public class InfiniteTree<T> {
         System.out.println(binaryValueTree.find(0L, 12, optimizableFind.get()));
         // sollte 1234 ausgeben.
 
-        //System.out.println(heavyTree.find(new String[1000000], 10, optimizableLongest.get()).length);
+        //System.out.println(binaryValueTree.find(1L, 3, optimizableFind.get()));
+
+        //System.out.println(heavyTree.find(new String[100000], 5, optimizableLongest.get()).length);
     }
 }

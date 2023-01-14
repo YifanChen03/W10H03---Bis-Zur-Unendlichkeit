@@ -21,6 +21,7 @@ sourceSets {
 }
 test {
     useJUnitPlatform()
+    maxHeapSize = "2048m"
 }
 
 dependencies {
